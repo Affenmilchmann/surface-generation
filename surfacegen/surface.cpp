@@ -1,11 +1,14 @@
 #include "surface.h"
 
 
-surface::surface(int size, float grad, int amp)
+surface::surface(int size, float grad, int water_percent, int amp)
 {
 	srand(time(0));
 
 	this->size = size;
+
+	if (water_percent == -1) water_percentage = 50;
+	else water_percentage = water_percent;
 
 	if (grad == 0) this->grad = 0.8;
 	else this->grad = grad;
@@ -31,7 +34,7 @@ void surface::make_seed()
 	{
 		for (int j = 0; j < size; j++)
 		{
-			seed[i][j] = (rand() % (2 * amplitude) - amplitude);
+			seed[i][j] = (rand() % (2 * amplitude) - (2 * amplitude) * (1.0f * water_percentage / 100));
 			surf[i][j] = 0;
 		}
 	}
@@ -105,9 +108,9 @@ void surface::open_pic()
 		for (int j = 0; j < size; j++)
 		{
 			if (surf[i][j] >= 0)
-				out_img.setPixel(i, j, sf::Color((int)round(255 * surf[i][j] / abs_max), 0, 0));
+				out_img.setPixel(i, j, sf::Color(0, (int)round(255 * surf[i][j] / abs_max), 0));
 			else
-				out_img.setPixel(i, j, sf::Color(0, (int)round(abs(255 * surf[i][j] / abs_max)), 0));
+				out_img.setPixel(i, j, sf::Color(0, 0, (int)round(abs(255 * surf[i][j] / abs_max))));
 		}
 
 	sf::Texture tmp;
