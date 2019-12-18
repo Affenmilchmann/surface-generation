@@ -7,7 +7,7 @@
 class surface
 {
 public:
-	surface(int size, float grad = 0.9, int amp = 10);
+	surface(int size, float grad = 0.8, int amp = 10);
 
 	void make_seed();
 	void gen_surf();

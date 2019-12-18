@@ -5,10 +5,14 @@ surface::surface(int size, float grad, int amp)
 {
 	srand(time(0));
 
-	this->grad = grad;
 	this->size = size;
+
+	if (grad == 0) this->grad = 0.8;
+	else this->grad = grad;
+
 	amplitude = amp;
 	abs_max = 1.0f * (-100000000);
+
 	seed = new float* [size];
 	surf = new float* [size];
 
