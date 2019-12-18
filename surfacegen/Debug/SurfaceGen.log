@@ -1,7 +1,7 @@
-﻿  main.cpp
-C:\Users\ivano\source\repos\SurfaceGen\SurfaceGen\main.cpp(26,12): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
-C:\Users\ivano\source\repos\SurfaceGen\SurfaceGen\main.cpp(36,37): warning C4244: =: преобразование "int" в "float", возможна потеря данных
-C:\Users\ivano\source\repos\SurfaceGen\SurfaceGen\main.cpp(96,15): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
-C:\Users\ivano\source\repos\SurfaceGen\SurfaceGen\main.cpp(121,17): warning C4244: инициализация: преобразование "float" в "int", возможна потеря данных
-C:\Users\ivano\source\repos\SurfaceGen\SurfaceGen\main.cpp(148,13): warning C4244: return: преобразование "double" в "float", возможна потеря данных
+﻿  surface.cpp
+C:\Users\ivano\source\repos\SurfaceGen\SurfaceGen\mymath.h(8,2): warning C4091: static : пропускается слева от "mymath", когда ни одна переменная не объявлена
+C:\Users\ivano\source\repos\SurfaceGen\SurfaceGen\surface.cpp(6,12): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+C:\Users\ivano\source\repos\SurfaceGen\SurfaceGen\surface.cpp(30,43): warning C4244: =: преобразование "int" в "float", возможна потеря данных
+C:\Users\ivano\source\repos\SurfaceGen\SurfaceGen\surface.cpp(43,15): warning C4244: инициализация: преобразование "double" в "float", возможна потеря данных
+C:\Users\ivano\source\repos\SurfaceGen\SurfaceGen\surface.cpp(68,17): warning C4244: инициализация: преобразование "float" в "int", возможна потеря данных
   SurfaceGen.vcxproj -> C:\Users\ivano\source\repos\SurfaceGen\Debug\SurfaceGen.exe

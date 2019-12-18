@@ -136,6 +136,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="mymath.cpp" />
+    <ClCompile Include="surface.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="mymath.h" />
+    <ClInclude Include="surface.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
