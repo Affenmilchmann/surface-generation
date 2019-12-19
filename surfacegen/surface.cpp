@@ -1,11 +1,16 @@
 #include "surface.h"
 
+float sand_line = 0.05;
+float smooth_line = 0.4;
 
-surface::surface(int size, float grad, int water_percent, int amp)
+surface::surface(int size, float grad, int water_percent, int smooth, int amp)
 {
 	srand(time(0));
 
+	is_in_procces = false;
+
 	this->size = size;
+	smooth_level = smooth;
 
 	if (water_percent == -1) water_percentage = 50;
 	else water_percentage = water_percent;
@@ -43,6 +48,21 @@ void surface::make_seed()
 void surface::gen_surf()
 {
 	req_fill(size, 0, 0, grad);
+}
+
+void surface::smooth_surf()
+{
+	//black silution
+	for (int k = 0; k < smooth_level && k < 100; k++)
+	{
+		for (int i = 1; i < size - 1; i++)
+			for (int j = 1; j < size - 1; j++)
+			{
+				float tmp = surf[i][j] / ((surf[i + 1][j] + surf[i][j + 1] + surf[i][j] + surf[i + 1][j + 1]) / 4);
+				if (tmp > 1 + smooth_line || tmp < 1 - smooth_line)
+					surf[i][j] = (surf[i + 1][j] + surf[i][j + 1] + surf[i][j] + surf[i + 1][j + 1]) / 4;
+			}
+	}
 }
 
 void surface::req_fill(int size, int x, int y, float grad)
@@ -98,30 +118,61 @@ void surface::req_fill(int size, int x, int y, float grad)
 
 void surface::open_pic()
 {
-	sf::RenderWindow pic_window(sf::VideoMode(unsigned(size), unsigned(size)), "Pic");
+	sf::RenderWindow pic_window(sf::VideoMode(unsigned(size), unsigned(size)), "Pic", sf::Style::Default, sf::ContextSettings(0, 0, 5, 1, 1, 0, false));
 	sf::Event ev;
 	pic_window.clear(sf::Color(0, 0, 0));
 	sf::Image out_img;
 	out_img.create(size, size);
 
-	for (int i = 0; i < size; i++)
-		for (int j = 0; j < size; j++)
-		{
-			if (surf[i][j] >= 0)
-				out_img.setPixel(i, j, sf::Color(0, (int)round(255 * surf[i][j] / abs_max), 0));
-			else
-				out_img.setPixel(i, j, sf::Color(0, 0, (int)round(abs(255 * surf[i][j] / abs_max))));
-		}
 
 	sf::Texture tmp;
-	tmp.loadFromImage(out_img);
 	sf::Sprite spr;
-	spr.setTexture(tmp, true);
 
-	pic_window.draw(spr);
-	pic_window.display();
 
 	while (pic_window.isOpen())
+	{
+		if (true)
+		{
+			for (int i = 0; i < size; i++)
+				for (int j = 0; j < size; j++)
+				{
+					float k = abs(surf[i][j]) / abs_max;
+					if (surf[i][j] >= 0)
+						if (k < sand_line)
+							out_img.setPixel(i, j, sf::Color((int)round(255 * (k / sand_line)), (int)round(255 * (k / sand_line)), 0));
+						else
+							out_img.setPixel(i, j, sf::Color(0, (int)round(255 * k), 0));
+					else
+						out_img.setPixel(i, j, sf::Color(0, 0, (int)round(255 * (1 - k))));
+				}
+			tmp.loadFromImage(out_img);
+			spr.setTexture(tmp, true);
+			pic_window.draw(spr);
+			pic_window.display();
+		}
 		while (pic_window.pollEvent(ev))
 			if (ev.type == sf::Event::Closed) pic_window.close();
+	}
+}
+
+void surface::live_gen()
+{
+	is_in_procces = true;
+	gen_surf();
+	smooth_surf();
+	is_in_procces = false;
+}
+
+void surface::live_draw()
+{
+	std::thread pic_thread([this]{
+		this->open_pic();
+	});
+
+	std::thread gen_thread([this] {
+		this->live_gen();
+		}); 
+
+	pic_thread.join();
+	gen_thread.join();
 }

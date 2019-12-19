@@ -4,7 +4,7 @@
 
 int main()
 {
-	int s, water;
+	int s, water, smooth;
 	float speed;
 	std::cout << "Input the size: ";
 	std::cin >> s;
@@ -12,12 +12,12 @@ int main()
 	std::cin >> speed;
 	std::cout << "Input water % (or leave it -1 = 50%): ";
 	std::cin >> water;
+	std::cout << "Input smooth level (0 - 100): ";
+	std::cin >> smooth;
 
-	surface my_surf(s, speed, water);
+	surface my_surf(s, speed, water, smooth);
 
-	my_surf.gen_surf();
-
-	my_surf.open_pic();
+	my_surf.live_draw();
 
 	return 0;
 }
