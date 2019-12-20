@@ -122,6 +122,7 @@ int main()
 		else if (input == "gen")
 		{
 			my_surf.gen_surf();
+			std::cout << "Picture settings: \n" << my_surf.get_status();
 			my_surf.open_pic();
 		}
 		else if (input == "help") help();

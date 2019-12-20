@@ -21,17 +21,18 @@ public:
 	void set_sand(float sand);
 	void set_grad(float grad);
 
+	std::string get_status();
+
 private:
 	float** seed;
 	float** surf;
 	int size;
-	float abs_max, grad, sand_percent, water_percentage;
+	float grad, sand_percent, water_percentage;
 	int smooth_lvl;
 	int mode;
 
 	void make_seed();
 	void smooth(int deep);
-	void get_max();
 	void req_fill(int x1, int y1, int x2, int y2, float grad, float* seed[]);
 };
 

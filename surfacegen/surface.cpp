@@ -8,7 +8,6 @@ surface::surface()
 
 	size = 200;
 
-	abs_max = -1;
 	smooth_lvl = 20;
 	sand_percent = 0.1f;
 	water_percentage = 0.5f;
@@ -52,21 +51,8 @@ void surface::gen_surf()
 	req_fill(0, 0, size - 1, size - 1, grad, seed);
 
 	smooth(smooth_lvl);
-
-	get_max();
 }
 
-void surface::get_max()
-{
-	abs_max = -1;
-	for (int i = 0; i < size; i++)
-	{
-		for (int j = 0; j < size; j++)
-		{
-			if (abs(surf[i][j]) > abs_max) abs_max = abs(surf[i][j]);
-		}
-	}
-}
 
 void surface::smooth(int deep)
 {
@@ -311,8 +297,7 @@ void surface::open_pic()
 		for (int i = 0; i < size; i++)
 			for (int j = 0; j < size; j++)
 			{
-				float k = surf[i][j] / abs_max;
-				out_img.setPixel(i, j, sf::Color(255 * k, 255 * k, 255 * k));
+				out_img.setPixel(i, j, sf::Color(255 * surf[i][j], 255 * surf[i][j], 255 * surf[i][j]));
 			}
 
 	if (mode == 1)
@@ -377,3 +362,33 @@ void surface::set_grad(float grad)
 	this->grad = grad;
 }
 
+std::string surface::get_status()
+{
+	std::string ans = "";
+
+	ans += "size = ";
+	ans += std::to_string(size);
+	ans += "\n";
+
+	ans += "water = ";
+	ans += std::to_string(water_percentage);
+	ans += "\n";
+
+	ans += "sand = ";
+	ans += std::to_string(sand_percent);
+	ans += "\n";
+
+	ans += "smooth = ";
+	ans += std::to_string(smooth_lvl);
+	ans += "\n";
+
+	ans += "grad = ";
+	ans += std::to_string(grad);
+	ans += "\n";
+
+	ans += "drawmode = ";
+	ans += std::to_string(mode);
+	ans += "\n";
+
+	return ans;
+}
