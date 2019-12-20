@@ -125,6 +125,16 @@ int main()
 			std::cout << "Picture settings: \n" << my_surf.get_status();
 			my_surf.open_pic();
 		}
+		else if (input == "draw")
+		{
+			my_surf.make_pic();
+			std::cout << "Picture settings: \n" << my_surf.get_status();
+			my_surf.open_pic();
+		}
+		else if (input == "seed")
+		{
+			my_surf.make_seed();
+		}
 		else if (input == "help") help();
 		else if (input != "exit")
 			std::cout << "Not existing command \n";
@@ -142,8 +152,10 @@ void help()
 		<< "\n grad"
 		<< "\n drawmode"
 		<< "\n"
-		<< "\nUse this command to make a picture:"
-		<< "\n gen"
+		<< "\nUse this commands to make a picture:"
+		<< "\n seed (to generate new seed)"
+		<< "\n draw (to draw with ready seed)"
+		<< "\n gen (generate seed and draw)"
 		<< "\n"
 		<< "\nOther commands:"
 		<< "\n help"

@@ -5,8 +5,17 @@ float snow_line = 0.7, smooth_parameter = 2.0f;
 surface::surface()
 {
 	srand(time(0));
-
 	size = 200;
+
+	seed = new float* [size]; 
+	surf = new float* [size];
+	for (int i = 0; i < size; i++)
+	{
+		seed[i] = new float[size];
+		surf[i] = new float[size];
+	}
+
+	make_seed();
 
 	smooth_lvl = 20;
 	sand_percent = 0.1f;
@@ -15,10 +24,49 @@ surface::surface()
 	mode = 1;
 }
 
-void surface::make_seed()
+void surface::make_pic()
 {
+	if (size <= 3)
+	{
+		std::cout << "\nSize is too small ERROR. \n";
+		return;
+	}
+
+	delete surf;
+	surf = new float* [size];
+
 	for (int i = 0; i < size; i++)
 	{
+		surf[i] = new float[size];
+		for (int j = 0; j < size; j++)
+			surf[i][j] = 0.0f;
+	}
+
+	surf[0][0] = surf[size - 1][0] = surf[0][size - 1] = surf[size - 1][size - 1] = seed[0][0];
+
+	req_fill(0, 0, size - 1, size - 1, grad, seed);
+
+	smooth(smooth_lvl);
+}
+
+void surface::make_seed()
+{
+	if (size <= 3)
+	{
+		std::cout << "\nSize is too small ERROR. \n";
+		return;
+	}
+
+	delete surf;
+	delete seed;
+
+	seed = new float* [size];
+	surf = new float* [size];
+
+	for (int i = 0; i < size; i++)
+	{
+		seed[i] = new float[size];
+		surf[i] = new float[size];
 		for (int j = 0; j < size; j++)
 		{
 			surf[i][j] = 0.0f;
@@ -29,28 +77,8 @@ void surface::make_seed()
 
 void surface::gen_surf()
 {
-	if (size <= 3)
-	{
-		std::cout << "\nSize is too small ERROR. \n";
-		return;
-	}
-
-	seed = new float* [size];
-	surf = new float* [size];
-
-	for (int i = 0; i < size; i++)
-	{
-		surf[i] = new float[size];
-		seed[i] = new float[size];
-	}
-
 	make_seed();
-
-	surf[0][0] = surf[size - 1][0] = surf[0][size - 1] = surf[size - 1][size - 1] = seed[0][0];
-
-	req_fill(0, 0, size - 1, size - 1, grad, seed);
-
-	smooth(smooth_lvl);
+	make_pic();
 }
 
 
@@ -201,7 +229,7 @@ void surface::req_fill(int x1, int y1, int x2, int y2, float grad, float* seed[]
 			int next_pointY = (int)round((i[1] + i[3]) / 2.0f);
 
 			if (surf[next_pointX][next_pointY] == 0.0f)
-			surf[next_pointX][next_pointY] = seed[next_pointX][next_pointY] * grad +
+				surf[next_pointX][next_pointY] = seed[next_pointX][next_pointY] * grad +
 				(surf[i[0]][i[1]] + surf[i[0]][i[3]] + surf[i[2]][i[1]] + surf[i[2]][i[3]]) / 4;
 		}
 
@@ -229,19 +257,19 @@ void surface::req_fill(int x1, int y1, int x2, int y2, float grad, float* seed[]
 			tempY %= size;
 
 			if (surf[i[2]][next_pointY] == 0.0f)
-			surf[i[2]][next_pointY] = seed[i[2]][next_pointY] * grad +
+				surf[i[2]][next_pointY] = seed[i[2]][next_pointY] * grad +
 				(surf[i[2]][i[1]] + surf[i[2]][i[3]] + surf[next_pointX][next_pointY] + surf[tempX][next_pointY]) / 4;
 
 			if (surf[i[0]][next_pointY] == 0.0f)
-			surf[i[0]][next_pointY] = seed[i[0]][next_pointY] * grad +
+				surf[i[0]][next_pointY] = seed[i[0]][next_pointY] * grad +
 				(surf[i[0]][i[1]] + surf[i[0]][i[3]] + surf[next_pointX][next_pointY] + surf[tempXn][next_pointY]) / 4;
 
 			if (surf[next_pointX][i[1]] == 0.0f)
-			surf[next_pointX][i[1]] = seed[next_pointX][i[1]] * grad +
+				surf[next_pointX][i[1]] = seed[next_pointX][i[1]] * grad +
 				(surf[i[0]][i[1]] + surf[i[2]][i[1]] + surf[next_pointX][next_pointY] + surf[next_pointX][tempYn]) / 4;
 
 			if (surf[next_pointX][i[3]] == 0.0f)
-			surf[next_pointX][i[3]] = seed[i[0]][next_pointY] * grad +
+				surf[next_pointX][i[3]] = seed[i[0]][next_pointY] * grad +
 				(surf[i[0]][i[3]] + surf[i[2]][i[3]] + surf[next_pointX][next_pointY] + surf[next_pointX][tempYn]) / 4;
 
 			if (abs(i[0] - i[2]) > 2 || abs(i[1] - i[3]) > 2) finish = false;
@@ -301,20 +329,20 @@ void surface::open_pic()
 			}
 
 	if (mode == 1)
-	for (int i = 0; i < size; i++)
-		for (int j = 0; j < size; j++)
-		{
-			float sized_k = (surf[i][j] - water_percentage) / (1 - water_percentage);
-			if (surf[i][j] > water_percentage)
-				if (sized_k < sand_percent)
-					out_img.setPixel(i, j, sf::Color((int)round(255 * (sized_k / sand_percent)), (int)round(255 * (sized_k / sand_percent)), 0));
-				else if (sized_k > snow_line + water_percentage)
-					out_img.setPixel(i, j, sf::Color((int)round(255 * (1.0f / 3) * (2 + (sized_k - snow_line) / (1 - snow_line))), (int)round(255 * (1.0f / 3) * (2 + (sized_k - snow_line) / (1 - snow_line))), (int)round(255 * (1.0f / 3) * (2 + (sized_k - snow_line) / (1 - snow_line)))));
+		for (int i = 0; i < size; i++)
+			for (int j = 0; j < size; j++)
+			{
+				float sized_k = (surf[i][j] - water_percentage) / (1 - water_percentage);
+				if (surf[i][j] > water_percentage)
+					if (sized_k < sand_percent)
+						out_img.setPixel(i, j, sf::Color((int)round(255 * (sized_k / sand_percent)), (int)round(255 * (sized_k / sand_percent)), 0));
+					else if (sized_k > snow_line + water_percentage)
+						out_img.setPixel(i, j, sf::Color((int)round(255 * (1.0f / 3) * (2 + (sized_k - snow_line) / (1 - snow_line))), (int)round(255 * (1.0f / 3) * (2 + (sized_k - snow_line) / (1 - snow_line))), (int)round(255 * (1.0f / 3) * (2 + (sized_k - snow_line) / (1 - snow_line)))));
+					else
+						out_img.setPixel(i, j, sf::Color(0, (int)round(255 * sized_k), 0));
 				else
-					out_img.setPixel(i, j, sf::Color(0, (int)round(255 * sized_k), 0));
-			else
-				out_img.setPixel(i, j, sf::Color(0, 0, (int)round(255 * (1 - (water_percentage - surf[i][j]) / water_percentage))));
-		}
+					out_img.setPixel(i, j, sf::Color(0, 0, (int)round(255 * (1 - (water_percentage - surf[i][j]) / water_percentage))));
+			}
 	sf::Texture tmp;
 	tmp.loadFromImage(out_img);
 	sf::Sprite spr;
@@ -335,6 +363,7 @@ void surface::open_pic()
 void surface::set_size(int size)
 {
 	this->size = size;
+	make_seed();
 }
 
 void surface::set_smooth(int smooth)

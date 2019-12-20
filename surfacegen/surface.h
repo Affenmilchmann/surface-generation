@@ -11,6 +11,8 @@ public:
 	surface();
 
 	void gen_surf();
+	void make_seed();
+	void make_pic();
 
 	void open_pic();
 
@@ -31,7 +33,6 @@ private:
 	int smooth_lvl;
 	int mode;
 
-	void make_seed();
 	void smooth(int deep);
 	void req_fill(int x1, int y1, int x2, int y2, float grad, float* seed[]);
 };
