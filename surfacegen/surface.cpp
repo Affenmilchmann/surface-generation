@@ -15,7 +15,7 @@ surface::surface()
 		surf[i] = new float[size];
 	}
 
-	make_seed();
+	gen_seed();
 
 	smooth_lvl = 20;
 	sand_percent = 0.1f;
@@ -32,7 +32,8 @@ void surface::make_pic()
 		return;
 	}
 
-	delete surf;
+	delete_array(surf);
+
 	surf = new float* [size];
 
 	for (int i = 0; i < size; i++)
@@ -42,7 +43,10 @@ void surface::make_pic()
 			surf[i][j] = 0.0f;
 	}
 
-	surf[0][0] = surf[size - 1][0] = surf[0][size - 1] = surf[size - 1][size - 1] = seed[0][0];
+	surf[0][0] = seed[0][0];
+	surf[size - 1][0] = seed[size - 1][0];
+	surf[0][size - 1] = seed[0][size - 1];
+	surf[size - 1][size - 1] = seed[size - 1][size - 1];
 
 	req_fill(0, 0, size - 1, size - 1, grad, seed);
 
@@ -51,14 +55,18 @@ void surface::make_pic()
 
 void surface::make_seed()
 {
+	delete_array(surf);
+	delete_array(seed);
+	gen_seed();
+}
+
+void surface::gen_seed()
+{
 	if (size <= 3)
 	{
 		std::cout << "\nSize is too small ERROR. \n";
 		return;
 	}
-
-	delete surf;
-	delete seed;
 
 	seed = new float* [size];
 	surf = new float* [size];
@@ -77,7 +85,7 @@ void surface::make_seed()
 
 void surface::gen_surf()
 {
-	make_seed();
+	gen_seed();
 	make_pic();
 }
 
@@ -315,10 +323,14 @@ void surface::open_pic()
 {
 	if (size <= 3) return;
 
-	sf::RenderWindow pic_window(sf::VideoMode(unsigned(size), unsigned(size)), "Pic");
-	sf::Event ev;
-	pic_window.clear(sf::Color(0, 0, 0));
+	sf::RenderWindow pic_window(sf::VideoMode(size, size), "Surface generator");
 	sf::Image out_img;
+	sf::Event ev;
+	sf::Texture tmp;
+	sf::Sprite spr;
+
+	pic_window.clear(sf::Color(0, 0, 0));
+
 	out_img.create(size, size);
 
 	if (mode == 2)
@@ -343,9 +355,8 @@ void surface::open_pic()
 				else
 					out_img.setPixel(i, j, sf::Color(0, 0, (int)round(255 * (1 - (water_percentage - surf[i][j]) / water_percentage))));
 			}
-	sf::Texture tmp;
+
 	tmp.loadFromImage(out_img);
-	sf::Sprite spr;
 	spr.setTexture(tmp, true);
 
 	pic_window.draw(spr);
@@ -358,12 +369,23 @@ void surface::open_pic()
 		while (pic_window.pollEvent(ev))
 			if (ev.type == sf::Event::Closed) pic_window.close();
 	}
+
+	pic_window.close();
+}
+
+void surface::delete_array(float** arra)
+{
+	for (int i = 0; i < size; i++)
+		delete arra[i];
+	delete arra;
 }
 
 void surface::set_size(int size)
 {
+	delete_array(surf);
+	delete_array(seed);
 	this->size = size;
-	make_seed();
+	gen_seed();
 }
 
 void surface::set_smooth(int smooth)

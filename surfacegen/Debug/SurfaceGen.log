@@ -1,3 +1,8 @@
-﻿  main.cpp
+﻿  surface.cpp
 C:\Users\ivano\source\repos\SurfaceGen\SurfaceGen\mymath.h(8,2): warning C4091: static : пропускается слева от "mymath", когда ни одна переменная не объявлена
+C:\Users\ivano\source\repos\SurfaceGen\SurfaceGen\surface.cpp(3,22): warning C4305: инициализация: усечение из "double" в "float"
+C:\Users\ivano\source\repos\SurfaceGen\SurfaceGen\surface.cpp(7,12): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+C:\Users\ivano\source\repos\SurfaceGen\SurfaceGen\surface.cpp(340,78): warning C4244: аргумент: преобразование "float" в "sf::Uint8", возможна потеря данных
+C:\Users\ivano\source\repos\SurfaceGen\SurfaceGen\surface.cpp(340,60): warning C4244: аргумент: преобразование "float" в "sf::Uint8", возможна потеря данных
+C:\Users\ivano\source\repos\SurfaceGen\SurfaceGen\surface.cpp(340,42): warning C4244: аргумент: преобразование "float" в "sf::Uint8", возможна потеря данных
   SurfaceGen.vcxproj -> C:\Users\ivano\source\repos\SurfaceGen\Debug\SurfaceGen.exe

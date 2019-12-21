@@ -34,6 +34,8 @@ private:
 	int mode;
 
 	void smooth(int deep);
+	void gen_seed();
+	void delete_array(float** arra);
 	void req_fill(int x1, int y1, int x2, int y2, float grad, float* seed[]);
 };
 
