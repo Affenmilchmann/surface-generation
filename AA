@@ -1,0 +1,22 @@
+CFLAGS=-std=c++17 -c -Wall
+CC=g++
+SFML=-lsfml-graphics -lsfml-window -lsfml-system
+
+run: compile
+	./run
+	
+compile: main.o surface.o
+	$(CC) main.o surface.o -o run $(SFML)
+	
+main.o: main.cpp
+	$(CC) $(CFLAGS) main.cpp
+	
+mymath.o: mymath.cpp
+	$(CC) $(CFLAGS) mymath.cpp
+	
+surface.o: surface.cpp
+	$(CC) $(CFLAGS) surface.cpp
+	
+clean:
+	rm -rf *.o main
+	rm -f run
