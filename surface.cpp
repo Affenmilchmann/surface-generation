@@ -4,6 +4,8 @@ float snow_line = 0.7, smooth_parameter = 2.0f;
 
 surface::surface()
 {
+	sleep_time_seconds = 0.1f;
+
 	srand(time(0));
 	size = 200;
 
@@ -266,19 +268,39 @@ void surface::req_fill(int x1, int y1, int x2, int y2, float grad, float* seed[]
 
 			if (surf[i[2]][next_pointY] == 0.0f)
 				surf[i[2]][next_pointY] = seed[i[2]][next_pointY] * grad +
-				(surf[i[2]][i[1]] + surf[i[2]][i[3]] + surf[next_pointX][next_pointY] + surf[tempX][next_pointY]) / 4;
+				(
+				surf[i[2]][i[1]] + 
+				surf[i[2]][i[3]] + 
+				surf[next_pointX][next_pointY] + 
+				surf[tempX][next_pointY]
+				) / 4;
 
 			if (surf[i[0]][next_pointY] == 0.0f)
 				surf[i[0]][next_pointY] = seed[i[0]][next_pointY] * grad +
-				(surf[i[0]][i[1]] + surf[i[0]][i[3]] + surf[next_pointX][next_pointY] + surf[tempXn][next_pointY]) / 4;
+				(
+				surf[i[0]][i[1]] + 
+				surf[i[0]][i[3]] + 
+				surf[next_pointX][next_pointY] + 
+				surf[tempXn][next_pointY]
+				) / 4;
 
 			if (surf[next_pointX][i[1]] == 0.0f)
 				surf[next_pointX][i[1]] = seed[next_pointX][i[1]] * grad +
-				(surf[i[0]][i[1]] + surf[i[2]][i[1]] + surf[next_pointX][next_pointY] + surf[next_pointX][tempYn]) / 4;
+				(
+				surf[i[0]][i[1]] + 
+				surf[i[2]][i[1]] + 
+				surf[next_pointX][next_pointY] + 
+				surf[next_pointX][tempYn]
+				) / 4;
 
 			if (surf[next_pointX][i[3]] == 0.0f)
 				surf[next_pointX][i[3]] = seed[i[0]][next_pointY] * grad +
-				(surf[i[0]][i[3]] + surf[i[2]][i[3]] + surf[next_pointX][next_pointY] + surf[next_pointX][tempYn]) / 4;
+				(
+				surf[i[0]][i[3]] + 
+				surf[i[2]][i[3]] + 
+				surf[next_pointX][next_pointY] + 
+				surf[next_pointX][tempYn]
+				) / 4;
 
 			if (abs(i[0] - i[2]) > 2 || abs(i[1] - i[3]) > 2) finish = false;
 
@@ -347,11 +369,25 @@ void surface::open_pic()
 				float sized_k = (surf[i][j] - water_percentage) / (1 - water_percentage);
 				if (surf[i][j] > water_percentage)
 					if (sized_k < sand_percent)
-						out_img.setPixel(i, j, sf::Color((int)round(255 * (sized_k / sand_percent)), (int)round(255 * (sized_k / sand_percent)), 0));
+						out_img.setPixel(i, j, sf::Color(
+								 	   	  (int)round(255 * (sized_k / sand_percent)), 
+								 	   	  (int)round(255 * (sized_k / sand_percent)), 
+								 	   	  0)
+								 	   	  );
 					else if (sized_k > snow_line + water_percentage)
-						out_img.setPixel(i, j, sf::Color((int)round(255 * (1.0f / 3) * (2 + (sized_k - snow_line) / (1 - snow_line))), 
-										  (int)round(255 * (1.0f / 3) * (2 + (sized_k - snow_line) / (1 - snow_line))), 
-										  (int)round(255 * (1.0f / 3) * (2 + (sized_k - snow_line) / (1 - snow_line)))));
+						out_img.setPixel(i, j, sf::Color(
+										  (int)round(255 * (1.0f / 3) * 
+										  (2 + (sized_k - snow_line) / 
+										  (1 - snow_line))), 
+										  
+										  (int)round(255 * (1.0f / 3) * 
+										  (2 + (sized_k - snow_line) / 
+										  (1 - snow_line))), 
+										  
+										  (int)round(255 * (1.0f / 3) * 
+										  (2 + (sized_k - snow_line) / 
+										  (1 - snow_line)))
+										  ));
 					else
 						out_img.setPixel(i, j, sf::Color(0, 
 										  (int)round(255 * sized_k), 
@@ -359,7 +395,8 @@ void surface::open_pic()
 				else
 					out_img.setPixel(i, j, sf::Color(0, 
 									  0, 
-									  (int)round(200 * (1 - (water_percentage - surf[i][j]) / water_percentage))));
+									  (int)round(200 * 
+									  (1 - (water_percentage - surf[i][j]) / water_percentage))));
 			}
 
 	tmp.loadFromImage(out_img);
@@ -372,6 +409,14 @@ void surface::open_pic()
 	{
 		pic_window.draw(spr);
 		pic_window.display();
+		
+		#ifdef __linux__ 
+			usleep(1000 * 1000 * sleep_time_seconds);
+		#endif
+		#ifdef WINDOWS
+			Sleep(1000 * sleep_time_seconds);
+		#endif
+		
 		while (pic_window.pollEvent(ev))
 			if (ev.type == sf::Event::Closed) pic_window.close();
 	}

@@ -5,6 +5,13 @@
 #include <time.h>
 #include <vector>
 
+#ifdef __linux__ 
+#include <unistd.h>
+#endif
+#ifdef WINDOWS
+#include <windows.h>
+#endif
+
 class surface
 {
 public:
@@ -32,6 +39,7 @@ private:
 	float grad, sand_percent, water_percentage;
 	int smooth_lvl;
 	int mode;
+	float sleep_time_seconds;
 
 	void smooth(int deep);
 	void gen_seed();

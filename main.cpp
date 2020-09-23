@@ -26,10 +26,11 @@ int main()
 			try
 			{
 				size = std::stoi(input);
+				std::cout << size << std::endl;
 				if (size > 3) 
 				{
 					my_surf.set_size(size);
-					std::cout << "Size has been changed to " + input + "!\n";
+					std::cout << "Size has been changed to " + std::to_string(size) + "!\n";
 				}
 				else std::cout << "Size is too small! \n";
 			}
